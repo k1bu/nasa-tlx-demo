@@ -89,11 +89,12 @@
 			<div class="space-y-8">
 				{#each dimensions as dim}
 					<div>
-						<label class="mb-1 block text-lg font-semibold">{dim.label}</label>
+						<label class="mb-1 block text-lg font-semibold" for={dim.key}>{dim.label}</label>
 						<div class="mb-2 text-sm text-gray-500">{dim.description}</div>
 						<div class="flex items-center gap-4">
 							<span class="text-xs text-gray-400">Low</span>
 							<input
+								id={dim.key}
 								type="range"
 								min="0"
 								max="100"
