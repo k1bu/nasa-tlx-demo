@@ -50,6 +50,7 @@
 	let showPairwise = false;
 	let pairwiseWeights = null;
 	let submittedResult = null;
+	let submitting = false;
 
 	function handleSubmit() {
 		showPairwise = true;
@@ -117,6 +118,8 @@
 		<PairwiseComparison
 			{dimensions}
 			on:complete={async (e) => {
+				if (submitting) return;
+				submitting = true;
 				pairwiseWeights = e.detail.weights;
 				// Submit to backend
 				const response = await fetch('/api/tlx', {
@@ -135,6 +138,7 @@
 				} else {
 					alert('Failed to submit results.');
 				}
+				submitting = false;
 			}}
 			on:back={() => (showPairwise = false)}
 		/>
