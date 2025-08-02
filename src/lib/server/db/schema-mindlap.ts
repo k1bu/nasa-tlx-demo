@@ -53,34 +53,19 @@ export const taisResults = pgTable('tais_results', {
 		.references(() => users.id)
 		.notNull(),
 	createdAt: timestamp('created_at').defaultNow(),
-	// TAIS Scale Scores - 27 dimensions (percentile scores 0-99.9)
-	awareness: decimal('awareness', { precision: 4, scale: 1 }),
-	externalDistractibility: decimal('external_distractibility', { precision: 4, scale: 1 }),
-	analyticalConceptual: decimal('analytical_conceptual', { precision: 4, scale: 1 }),
-	internalDistractibility: decimal('internal_distractibility', { precision: 4, scale: 1 }),
-	actionFocused: decimal('action_focused', { precision: 4, scale: 1 }),
-	reducedFlexibility: decimal('reduced_flexibility', { precision: 4, scale: 1 }),
-	informationProcessing: decimal('information_processing', { precision: 4, scale: 1 }),
-	orientationToRulesAndRisks: decimal('orientation_to_rules_and_risks', { precision: 4, scale: 1 }),
-	control: decimal('control', { precision: 4, scale: 1 }),
-	selfConfidence: decimal('self_confidence', { precision: 4, scale: 1 }),
-	physicallyCompetitive: decimal('physically_competitive', { precision: 4, scale: 1 }),
-	decisionMakingStyle: decimal('decision_making_style', { precision: 4, scale: 1 }),
-	extroversion: decimal('extroversion', { precision: 4, scale: 1 }),
-	introversion: decimal('introversion', { precision: 4, scale: 1 }),
-	expressionOfIdeas: decimal('expression_of_ideas', { precision: 4, scale: 1 }),
-	expressionOfAnger: decimal('expression_of_anger', { precision: 4, scale: 1 }),
-	expressionOfSupport: decimal('expression_of_support', { precision: 4, scale: 1 }),
-	selfCritical: decimal('self_critical', { precision: 4, scale: 1 }),
-	focusOverTime: decimal('focus_over_time', { precision: 4, scale: 1 }),
-	performanceUnderPressure: decimal('performance_under_pressure', { precision: 4, scale: 1 }),
-	confidence: decimal('confidence', { precision: 4, scale: 1 }),
-	energy: decimal('energy', { precision: 4, scale: 1 }),
-	competitiveness: decimal('competitiveness', { precision: 4, scale: 1 }),
-	extraversion: decimal('extraversion', { precision: 4, scale: 1 }),
-	critical: decimal('critical', { precision: 4, scale: 1 }),
-	anxiety: decimal('anxiety', { precision: 4, scale: 1 }),
-	distractibility: decimal('distractibility', { precision: 4, scale: 1 }),
+	// TAIS Scale Scores
+	internalAttention: integer('internal_attention'),
+	externalAttention: integer('external_attention'),
+	broadAttention: integer('broad_attention'),
+	focusedAttention: integer('focused_attention'),
+	reducedAttention: integer('reduced_attention'),
+	informationProcessing: integer('information_processing'),
+	expressionOfIdeas: integer('expression_of_ideas'),
+	control: integer('control'),
+	performanceUnderPressure: integer('performance_under_pressure'),
+	frustration: integer('frustration'),
+	fatigue: integer('fatigue'),
+	selfConfidence: integer('self_confidence'),
 	// Raw data storage
 	rawScores: json('raw_scores'), // Store complete TAIS data
 	assessmentDate: date('assessment_date'),
@@ -139,13 +124,13 @@ export const pressureResults = pgTable('pressure_results', {
 	completed: boolean('completed').default(false)
 });
 
-// TLX Results (existing, but enhanced)
+// TLX Results (enhanced)
 export const tlxResults = pgTable('tlx_results', {
 	id: serial('id').primaryKey(),
 	createdAt: timestamp('created_at').defaultNow(),
 	userId: integer('user_id').references(() => users.id),
 	// Context information
-	trackId: integer('track_id').references(() => tracks.id),
+	trackId: integer('track_id'), // Will reference tracks.id
 	turnNumber: integer('turn_number'),
 	sessionType: varchar('session_type', { length: 50 }), // 'practice', 'qualifying', 'race', 'sim'
 	// TLX scores
@@ -371,9 +356,3 @@ export const tracksRelations = relations(tracks, ({ many }) => ({
 export const coursesRelations = relations(courses, ({ many }) => ({
 	progress: many(courseProgress)
 }));
-
-// Keep the old user table for backward compatibility during migration
-export const user = pgTable('user', {
-	id: serial('id').primaryKey(),
-	age: integer('age')
-});
