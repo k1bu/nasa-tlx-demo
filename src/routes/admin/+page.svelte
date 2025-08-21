@@ -98,13 +98,17 @@
 	<!-- Header -->
 	<header class="bg-white shadow">
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-			<div class="flex items-center justify-between py-6">
+			<div
+				class="flex flex-col space-y-4 py-6 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+			>
 				<div>
-					<h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+					<h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">Admin Dashboard</h1>
 					<p class="text-gray-600">Manage users and view TLX results</p>
 				</div>
-				<div class="flex items-center space-x-4">
-					<a href="/" class="text-indigo-600 hover:text-indigo-500">Back to TLX</a>
+				<div class="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
+					<a href="/" class="text-center text-indigo-600 hover:text-indigo-500 sm:text-left"
+						>Back to TLX</a
+					>
 					<button
 						on:click={handleLogout}
 						class="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
@@ -134,9 +138,9 @@
 			</div>
 		{:else}
 			<!-- Stats -->
-			<div class="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+			<div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
 				<div class="overflow-hidden rounded-lg bg-white shadow">
-					<div class="p-5">
+					<div class="p-4 sm:p-5">
 						<div class="flex items-center">
 							<div class="flex-shrink-0">
 								<div class="flex h-8 w-8 items-center justify-center rounded-md bg-indigo-500">
@@ -155,7 +159,7 @@
 									</svg>
 								</div>
 							</div>
-							<div class="ml-5 w-0 flex-1">
+							<div class="ml-3 w-0 flex-1 sm:ml-5">
 								<dl>
 									<dt class="truncate text-sm font-medium text-gray-500">Total Users</dt>
 									<dd class="text-lg font-medium text-gray-900">{users.length}</dd>
@@ -166,7 +170,7 @@
 				</div>
 
 				<div class="overflow-hidden rounded-lg bg-white shadow">
-					<div class="p-5">
+					<div class="p-4 sm:p-5">
 						<div class="flex items-center">
 							<div class="flex-shrink-0">
 								<div class="flex h-8 w-8 items-center justify-center rounded-md bg-green-500">
@@ -185,7 +189,7 @@
 									</svg>
 								</div>
 							</div>
-							<div class="ml-5 w-0 flex-1">
+							<div class="ml-3 w-0 flex-1 sm:ml-5">
 								<dl>
 									<dt class="truncate text-sm font-medium text-gray-500">Total TLX Results</dt>
 									<dd class="text-lg font-medium text-gray-900">
@@ -198,7 +202,7 @@
 				</div>
 
 				<div class="overflow-hidden rounded-lg bg-white shadow">
-					<div class="p-5">
+					<div class="p-4 sm:p-5">
 						<div class="flex items-center">
 							<div class="flex-shrink-0">
 								<div class="flex h-8 w-8 items-center justify-center rounded-md bg-purple-500">
@@ -217,7 +221,7 @@
 									</svg>
 								</div>
 							</div>
-							<div class="ml-5 w-0 flex-1">
+							<div class="ml-3 w-0 flex-1 sm:ml-5">
 								<dl>
 									<dt class="truncate text-sm font-medium text-gray-500">Total TAIS Results</dt>
 									<dd class="text-lg font-medium text-gray-900">
@@ -230,7 +234,7 @@
 				</div>
 
 				<div class="overflow-hidden rounded-lg bg-white shadow">
-					<div class="p-5">
+					<div class="p-4 sm:p-5">
 						<div class="flex items-center">
 							<div class="flex-shrink-0">
 								<div class="flex h-8 w-8 items-center justify-center rounded-md bg-yellow-500">
@@ -249,7 +253,7 @@
 									</svg>
 								</div>
 							</div>
-							<div class="ml-5 w-0 flex-1">
+							<div class="ml-3 w-0 flex-1 sm:ml-5">
 								<dl>
 									<dt class="truncate text-sm font-medium text-gray-500">Active Users</dt>
 									<dd class="text-lg font-medium text-gray-900">
@@ -269,7 +273,7 @@
 					<p class="mt-1 max-w-2xl text-sm text-gray-500">Manage assessments and user data</p>
 				</div>
 				<div class="border-t border-gray-200 px-4 py-5 sm:px-6">
-					<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 						<div class="rounded-lg border border-blue-200 bg-blue-50 p-4">
 							<div class="flex items-center">
 								<div class="flex-shrink-0">
@@ -277,12 +281,12 @@
 										<span class="text-lg text-white">📊</span>
 									</div>
 								</div>
-								<div class="ml-4">
+								<div class="ml-3 flex-1 sm:ml-4">
 									<h4 class="text-sm font-medium text-blue-900">TAIS Assessment Upload</h4>
 									<p class="text-sm text-blue-700">Upload TAIS assessment data for users</p>
 									<button
 										on:click={() => goto('/admin/tais-upload')}
-										class="mt-2 rounded bg-blue-600 px-3 py-1 text-sm font-medium text-white hover:bg-blue-700"
+										class="mt-2 w-full rounded bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 sm:w-auto"
 									>
 										Upload TAIS Data
 									</button>
@@ -296,14 +300,14 @@
 										<span class="text-lg text-white">🏁</span>
 									</div>
 								</div>
-								<div class="ml-4">
+								<div class="ml-3 flex-1 sm:ml-4">
 									<h4 class="text-sm font-medium text-green-900">Track Turns Management</h4>
 									<p class="text-sm text-green-700">
 										Manage turn-by-turn mental performance insights
 									</p>
 									<button
 										on:click={() => goto('/admin/track-turns')}
-										class="mt-2 rounded bg-green-600 px-3 py-1 text-sm font-medium text-white hover:bg-green-700"
+										class="mt-2 w-full rounded bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700 sm:w-auto"
 									>
 										Manage Turns
 									</button>
@@ -326,67 +330,149 @@
 							<div class="text-gray-500">No users found</div>
 						</div>
 					{:else}
-						<ul class="divide-y divide-gray-200">
-							{#each users as user}
-								<li class="px-4 py-4 sm:px-6">
-									<div class="flex items-center justify-between">
-										<div class="flex items-center">
-											<div class="h-10 w-10 flex-shrink-0">
+						<!-- Desktop Table View -->
+						<div class="hidden md:block">
+							<ul class="divide-y divide-gray-200">
+								{#each users as user}
+									<li class="px-4 py-4 sm:px-6">
+										<div class="flex items-center justify-between">
+											<div class="flex items-center">
+												<div class="h-10 w-10 flex-shrink-0">
+													<div
+														class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300"
+													>
+														<span class="text-sm font-medium text-gray-700">
+															{user.email.charAt(0).toUpperCase()}
+														</span>
+													</div>
+												</div>
+												<div class="ml-4">
+													<div class="text-sm font-medium text-gray-900">{user.email}</div>
+													<div class="text-sm text-gray-500">
+														{user.organization || 'No organization'} • {user.role}
+													</div>
+												</div>
+											</div>
+											<div class="flex items-center space-x-4">
+												<div class="text-sm text-gray-500">
+													{user.tlxCount} TLX • {user.taisCount} TAIS
+												</div>
+												<div class="text-sm text-gray-500">
+													Joined {formatDate(user.createdAt)}
+												</div>
+												{#if user.lastLogin}
+													<div class="text-sm text-gray-500">
+														Last login {formatDate(user.lastLogin)}
+													</div>
+												{/if}
+
+												<!-- Role Management -->
+												<select
+													value={user.role}
+													on:change={(e) =>
+														updateUserRole(user.id, (e.target as HTMLSelectElement).value)}
+													class="rounded border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
+												>
+													<option value="driver">Driver</option>
+													<option value="regular">Regular</option>
+													<option value="superuser">Superuser</option>
+													<option value="coach">Coach</option>
+												</select>
+
+												<!-- View Results Button -->
+												{#if user.tlxCount > 0 || user.taisCount > 0}
+													<button
+														on:click={() => viewUserResults(user.id)}
+														class="rounded bg-indigo-600 px-3 py-1 text-sm font-medium text-white hover:bg-indigo-700"
+													>
+														View Results
+													</button>
+												{/if}
+											</div>
+										</div>
+									</li>
+								{/each}
+							</ul>
+						</div>
+
+						<!-- Mobile Card View -->
+						<div class="md:hidden">
+							<div class="space-y-4 p-4">
+								{#each users as user}
+									<div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+										<!-- User Header -->
+										<div class="mb-4 flex items-center space-x-3">
+											<div class="h-12 w-12 flex-shrink-0">
 												<div
-													class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300"
+													class="flex h-12 w-12 items-center justify-center rounded-full bg-gray-300"
 												>
 													<span class="text-sm font-medium text-gray-700">
 														{user.email.charAt(0).toUpperCase()}
 													</span>
 												</div>
 											</div>
-											<div class="ml-4">
-												<div class="text-sm font-medium text-gray-900">{user.email}</div>
+											<div class="min-w-0 flex-1">
+												<div class="truncate text-sm font-medium text-gray-900">{user.email}</div>
 												<div class="text-sm text-gray-500">
 													{user.organization || 'No organization'} • {user.role}
 												</div>
 											</div>
 										</div>
-										<div class="flex items-center space-x-4">
-											<div class="text-sm text-gray-500">
-												{user.tlxCount} TLX • {user.taisCount} TAIS
-											</div>
-											<div class="text-sm text-gray-500">
-												Joined {formatDate(user.createdAt)}
-											</div>
-											{#if user.lastLogin}
-												<div class="text-sm text-gray-500">
-													Last login {formatDate(user.lastLogin)}
-												</div>
-											{/if}
 
+										<!-- User Stats -->
+										<div class="mb-4 grid grid-cols-2 gap-4 text-sm">
+											<div class="text-center">
+												<div class="font-medium text-gray-900">{user.tlxCount}</div>
+												<div class="text-gray-500">TLX Results</div>
+											</div>
+											<div class="text-center">
+												<div class="font-medium text-gray-900">{user.taisCount}</div>
+												<div class="text-gray-500">TAIS Results</div>
+											</div>
+										</div>
+
+										<!-- User Details -->
+										<div class="mb-4 space-y-2 text-sm text-gray-600">
+											<div>Joined: {formatDate(user.createdAt)}</div>
+											{#if user.lastLogin}
+												<div>Last login: {formatDate(user.lastLogin)}</div>
+											{/if}
+										</div>
+
+										<!-- Actions -->
+										<div class="flex flex-col space-y-2">
 											<!-- Role Management -->
-											<select
-												value={user.role}
-												on:change={(e) =>
-													updateUserRole(user.id, (e.target as HTMLSelectElement).value)}
-												class="rounded border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
-											>
-												<option value="driver">Driver</option>
-												<option value="regular">Regular</option>
-												<option value="superuser">Superuser</option>
-												<option value="coach">Coach</option>
-											</select>
+											<div>
+												<label class="mb-1 block text-xs font-medium text-gray-700">Role</label>
+												<select
+													value={user.role}
+													on:change={(e) =>
+														updateUserRole(user.id, (e.target as HTMLSelectElement).value)}
+													class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+												>
+													<option value="driver">Driver</option>
+													<option value="regular">Regular</option>
+													<option value="superuser">Superuser</option>
+													<option value="coach">Coach</option>
+												</select>
+											</div>
 
 											<!-- View Results Button -->
 											{#if user.tlxCount > 0 || user.taisCount > 0}
 												<button
 													on:click={() => viewUserResults(user.id)}
-													class="rounded bg-indigo-600 px-3 py-1 text-sm font-medium text-white hover:bg-indigo-700"
+													class="w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
 												>
 													View Results
 												</button>
+											{:else}
+												<div class="py-2 text-center text-sm text-gray-500">No results yet</div>
 											{/if}
 										</div>
 									</div>
-								</li>
-							{/each}
-						</ul>
+								{/each}
+							</div>
+						</div>
 					{/if}
 				</div>
 			</div>
