@@ -5,7 +5,7 @@
 	interface User {
 		id: number;
 		email: string;
-		role: 'regular' | 'superuser' | 'coach';
+		role: 'driver' | 'regular' | 'superuser' | 'coach';
 		organization?: string;
 		createdAt: string;
 		lastLogin?: string;
@@ -298,7 +298,9 @@
 								</div>
 								<div class="ml-4">
 									<h4 class="text-sm font-medium text-green-900">Track Turns Management</h4>
-									<p class="text-sm text-green-700">Manage turn-by-turn mental performance insights</p>
+									<p class="text-sm text-green-700">
+										Manage turn-by-turn mental performance insights
+									</p>
 									<button
 										on:click={() => goto('/admin/track-turns')}
 										class="mt-2 rounded bg-green-600 px-3 py-1 text-sm font-medium text-white hover:bg-green-700"
@@ -365,6 +367,7 @@
 													updateUserRole(user.id, (e.target as HTMLSelectElement).value)}
 												class="rounded border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
 											>
+												<option value="driver">Driver</option>
 												<option value="regular">Regular</option>
 												<option value="superuser">Superuser</option>
 												<option value="coach">Coach</option>

@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import DashboardNav from '$lib/components/DashboardNav.svelte';
+	import DriverNav from '$lib/components/DriverNav.svelte';
 	import PairwiseComparison from '$lib/PairwiseComparison.svelte';
 	import type { PageData } from './$types';
 
@@ -81,7 +82,11 @@
 
 <div class="min-h-screen bg-gray-50">
 	<!-- Navigation -->
-	<DashboardNav {user} />
+	{#if user.role === 'driver'}
+		<DriverNav {user} />
+	{:else}
+		<DashboardNav {user} />
+	{/if}
 
 	<!-- Main content -->
 	<main class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
@@ -141,22 +146,31 @@
 						submitting = true;
 						pairwiseWeights = e.detail.weights;
 						// Submit to backend
-						const response = await fetch('/api/tlx', {
-							method: 'POST',
-							headers: { 'Content-Type': 'application/json' },
-							body: JSON.stringify({
-								task,
-								form,
-								weights: pairwiseWeights
-							})
-						});
-						if (response.ok) {
-							submittedResult = await response.json();
-							showPairwise = false;
-						} else {
-							alert('Failed to submit results.');
+						try {
+							const response = await fetch('/api/tlx', {
+								method: 'POST',
+								headers: { 'Content-Type': 'application/json' },
+								body: JSON.stringify({
+									task,
+									form,
+									weights: pairwiseWeights
+								})
+							});
+							
+							if (response.ok) {
+								submittedResult = await response.json();
+								showPairwise = false;
+							} else {
+								const errorData = await response.json();
+								console.error('TLX submission failed:', response.status, errorData);
+								alert(`Failed to submit results: ${errorData.error || 'Unknown error'}`);
+							}
+						} catch (error) {
+							console.error('TLX submission error:', error);
+							alert(`Failed to submit results: ${error.message || 'Network error'}`);
+						} finally {
+							submitting = false;
 						}
-						submitting = false;
 					}}
 					on:back={() => (showPairwise = false)}
 				/>

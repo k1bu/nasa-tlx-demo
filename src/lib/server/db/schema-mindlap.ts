@@ -129,10 +129,6 @@ export const tlxResults = pgTable('tlx_results', {
 	id: serial('id').primaryKey(),
 	createdAt: timestamp('created_at').defaultNow(),
 	userId: integer('user_id').references(() => users.id),
-	// Context information
-	trackId: integer('track_id'), // Will reference tracks.id
-	turnNumber: integer('turn_number'),
-	sessionType: varchar('session_type', { length: 50 }), // 'practice', 'qualifying', 'race', 'sim'
 	// TLX scores
 	mental: integer('mental').notNull(),
 	physical: integer('physical').notNull(),

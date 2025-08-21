@@ -72,21 +72,20 @@
 
 	async function checkAuth() {
 		try {
-			// Check if user is authenticated by trying to access a protected endpoint
-			const response = await fetch('/api/tlx', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ test: true })
-			});
-
-			if (response.status === 401) {
-				// Not authenticated, redirect to login
-				goto('/login');
-				return;
+			// Check if user is authenticated using the proper endpoint
+			const response = await fetch('/api/auth/me');
+			
+			if (response.ok) {
+				const data = await response.json();
+				if (data.user) {
+					// User is authenticated, redirect to dashboard
+					goto('/dashboard');
+					return;
+				}
 			}
-
-			// If we get here, user is authenticated, redirect to dashboard
-			goto('/dashboard');
+			
+			// Not authenticated, redirect to login
+			goto('/login');
 		} catch (err) {
 			console.error('Auth check error:', err);
 			goto('/login');

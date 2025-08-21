@@ -20,7 +20,9 @@ export const users = pgTable('users', {
 	role: varchar('role', { length: 20 }).default('regular').notNull(), // 'regular', 'superuser', 'coach'
 	organization: varchar('organization', { length: 255 }),
 	createdAt: timestamp('created_at').defaultNow(),
-	lastLogin: timestamp('last_login')
+	lastLogin: timestamp('last_login'),
+	passwordResetToken: varchar('password_reset_token', { length: 255 }),
+	passwordResetExpires: timestamp('password_reset_expires')
 });
 
 export const userProfiles = pgTable('user_profiles', {
@@ -144,10 +146,6 @@ export const tlxResults = pgTable('tlx_results', {
 	id: serial('id').primaryKey(),
 	createdAt: timestamp('created_at').defaultNow(),
 	userId: integer('user_id').references(() => users.id),
-	// Context information
-	trackId: integer('track_id').references(() => tracks.id),
-	turnNumber: integer('turn_number'),
-	sessionType: varchar('session_type', { length: 50 }), // 'practice', 'qualifying', 'race', 'sim'
 	// TLX scores
 	mental: integer('mental').notNull(),
 	physical: integer('physical').notNull(),

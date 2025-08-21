@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import DashboardNav from '$lib/components/DashboardNav.svelte';
+	import DriverDashboard from '$lib/components/DriverDashboard.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -121,162 +122,90 @@
 	<title>MindLap Dashboard</title>
 </svelte:head>
 
-<div class="min-h-screen bg-gray-50">
-	<!-- Navigation -->
-	<DashboardNav {user} />
+{#if user?.role === 'driver'}
+	<!-- Driver Dashboard - Simplified -->
+	<DriverDashboard {user} />
+{:else}
+	<!-- Full Dashboard - For regular users and admins -->
+	<div class="min-h-screen bg-gray-50">
+		<!-- Navigation -->
+		<DashboardNav {user} />
 
-	<!-- Main Content -->
-	<main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-		<!-- Welcome Section -->
-		<div class="mb-8">
-			<h2 class="mb-2 text-2xl font-semibold text-gray-900">
-				Welcome back, {user?.email?.split('@')[0]}!
-			</h2>
-			<p class="text-gray-600">
-				Ready to optimize your mental performance? Here's what you can do today.
-			</p>
-		</div>
+		<!-- Main Content -->
+		<main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+			<!-- Welcome Section -->
+			<div class="mb-8">
+				<h2 class="mb-2 text-2xl font-semibold text-gray-900">
+					Welcome back, {user?.email?.split('@')[0]}!
+				</h2>
+				<p class="text-gray-600">
+					Ready to optimize your mental performance? Here's what you can do today.
+				</p>
+			</div>
 
-		<!-- Quick Actions -->
-		<div class="mb-8">
-			<h3 class="mb-4 text-lg font-medium text-gray-900">Quick Actions</h3>
-			<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+			<!-- Quick Actions -->
+			<div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 				{#each quickActions as action}
 					<button
 						on:click={action.action}
-						class="group rounded-lg border border-gray-200 bg-white p-4 text-left transition-all duration-200 hover:border-blue-300 hover:shadow-md"
+						class="flex items-center space-x-4 rounded-lg border border-gray-200 bg-white p-4 text-left transition-all hover:border-blue-300 hover:shadow-md"
 					>
-						<div class="flex items-center">
-							<span class="mr-3 text-2xl">{action.icon}</span>
-							<div>
-								<h4 class="font-medium text-gray-900 transition-colors group-hover:text-blue-600">
-									{action.title}
-								</h4>
-								<p class="text-sm text-gray-500">{action.description}</p>
-							</div>
+						<div class="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-2xl">
+							{action.icon}
+						</div>
+						<div class="flex-1">
+							<h3 class="font-medium text-gray-900">{action.title}</h3>
+							<p class="text-sm text-gray-600">{action.description}</p>
 						</div>
 					</button>
 				{/each}
 			</div>
-		</div>
 
-		<!-- Main Dashboard Cards -->
-		<div class="mb-8">
-			<h3 class="mb-4 text-lg font-medium text-gray-900">Platform Features</h3>
+			<!-- Dashboard Cards -->
 			<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 				{#each dashboardCards as card}
-					<div class="group relative cursor-pointer" on:click={card.action}>
-						<div
-							class="h-full transform rounded-xl border border-gray-200 bg-white p-6 transition-all duration-200 hover:-translate-y-1 hover:border-gray-300 hover:shadow-lg"
-						>
-							<!-- Priority indicator -->
-							{#if card.priority === 'high'}
-								<div class="absolute top-4 right-4 h-3 w-3 rounded-full bg-red-500"></div>
-							{/if}
-
-							<div class="mb-4 flex items-start justify-between">
-								<div class="flex-1">
-									<h4 class="mb-2 text-xl font-semibold text-gray-900">
-										{card.title}
-									</h4>
-									<p class="text-sm leading-relaxed text-gray-600">
-										{card.description}
-									</p>
+					<div
+						class="group cursor-pointer overflow-hidden rounded-lg bg-white shadow transition-all hover:shadow-lg"
+						on:click={card.action}
+					>
+						<div class="p-6">
+							<div class="mb-4 flex items-center justify-between">
+								<div class="flex h-12 w-12 items-center justify-center rounded-lg {card.color} text-2xl text-white">
+									{card.icon}
 								</div>
-								<div class="ml-4 text-4xl">{card.icon}</div>
+								{#if card.priority === 'high'}
+									<span class="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-800">
+										High Priority
+									</span>
+								{/if}
 							</div>
-
+							<h3 class="mb-2 text-lg font-semibold text-gray-900">{card.title}</h3>
+							<p class="text-gray-600">{card.description}</p>
+						</div>
+						<div class="bg-gray-50 px-6 py-3 transition-colors group-hover:bg-gray-100">
 							<div class="flex items-center justify-between">
-								<span class="text-sm text-gray-500">Click to access</span>
-								<div
-									class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 transition-colors group-hover:bg-blue-100"
+								<span class="text-sm font-medium text-gray-700">Get Started</span>
+								<svg
+									class="h-4 w-4 text-gray-400 transition-transform group-hover:translate-x-1"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
 								>
-									<svg
-										class="h-4 w-4 text-gray-400 group-hover:text-blue-600"
-										fill="none"
-										stroke="currentColor"
-										viewBox="0 0 24 24"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M9 5l7 7-7 7"
-										></path>
-									</svg>
-								</div>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M9 5l7 7-7 7"
+									></path>
+								</svg>
 							</div>
 						</div>
 					</div>
 				{/each}
 			</div>
-		</div>
-
-		<!-- Statistics Section (Placeholder) -->
-		<div class="mb-8">
-			<h3 class="mb-4 text-lg font-medium text-gray-900">Your Progress</h3>
-			<div class="grid grid-cols-1 gap-4 md:grid-cols-4">
-				<div class="rounded-lg border border-gray-200 bg-white p-6">
-					<div class="flex items-center">
-						<div class="rounded-lg bg-blue-100 p-2">
-							<span class="text-2xl">📊</span>
-						</div>
-						<div class="ml-4">
-							<p class="text-sm font-medium text-gray-600">Total Assessments</p>
-							<p class="text-2xl font-semibold text-gray-900">{dashboardStats.totalAssessments}</p>
-						</div>
-					</div>
-				</div>
-
-				<div class="rounded-lg border border-gray-200 bg-white p-6">
-					<div class="flex items-center">
-						<div class="rounded-lg bg-green-100 p-2">
-							<span class="text-2xl">⚡</span>
-						</div>
-						<div class="ml-4">
-							<p class="text-sm font-medium text-gray-600">Recent TLX</p>
-							<p class="text-2xl font-semibold text-gray-900">{dashboardStats.recentTlxCount}</p>
-						</div>
-					</div>
-				</div>
-
-				<div class="rounded-lg border border-gray-200 bg-white p-6">
-					<div class="flex items-center">
-						<div class="rounded-lg bg-orange-100 p-2">
-							<span class="text-2xl">🧠</span>
-						</div>
-						<div class="ml-4">
-							<p class="text-sm font-medium text-gray-600">Courses Completed</p>
-							<p class="text-2xl font-semibold text-gray-900">{dashboardStats.completedCourses}</p>
-						</div>
-					</div>
-				</div>
-
-				<div class="rounded-lg border border-gray-200 bg-white p-6">
-					<div class="flex items-center">
-						<div class="rounded-lg bg-purple-100 p-2">
-							<span class="text-2xl">🏁</span>
-						</div>
-						<div class="ml-4">
-							<p class="text-sm font-medium text-gray-600">Track Sessions</p>
-							<p class="text-2xl font-semibold text-gray-900">{dashboardStats.trackSessions}</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Recent Activity (Placeholder) -->
-		<div class="rounded-lg border border-gray-200 bg-white p-6">
-			<h3 class="mb-4 text-lg font-medium text-gray-900">Recent Activity</h3>
-			<div class="py-8 text-center text-gray-500">
-				<span class="mb-4 block text-4xl">📊</span>
-				<p>No recent activity to display</p>
-				<p class="text-sm">Complete your first assessment to see your activity here</p>
-			</div>
-		</div>
-	</main>
-</div>
+		</main>
+	</div>
+{/if}
 
 <style>
 	/* Custom styles for smooth transitions */

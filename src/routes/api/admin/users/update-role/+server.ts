@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 
 		// Validate role
-		const validRoles = ['regular', 'superuser', 'coach'];
+		const validRoles = ['driver', 'regular', 'superuser', 'coach'];
 		if (!validRoles.includes(newRole)) {
 			return new Response(JSON.stringify({ error: 'Invalid role' }), {
 				status: 400,

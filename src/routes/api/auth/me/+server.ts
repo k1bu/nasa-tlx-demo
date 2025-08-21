@@ -6,8 +6,8 @@ export const GET: RequestHandler = async (event) => {
 		const user = await getSessionUser(event);
 
 		if (!user) {
-			return new Response(JSON.stringify({ error: 'Not authenticated' }), {
-				status: 401,
+			return new Response(JSON.stringify({ user: null }), {
+				status: 200,
 				headers: { 'Content-Type': 'application/json' }
 			});
 		}
@@ -28,8 +28,8 @@ export const GET: RequestHandler = async (event) => {
 		);
 	} catch (error) {
 		console.error('Get user error:', error);
-		return new Response(JSON.stringify({ error: 'Internal server error' }), {
-			status: 500,
+		return new Response(JSON.stringify({ user: null }), {
+			status: 200,
 			headers: { 'Content-Type': 'application/json' }
 		});
 	}

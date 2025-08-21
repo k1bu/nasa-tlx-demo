@@ -8,7 +8,7 @@ import { getSession } from './session';
 export interface User {
 	id: number;
 	email: string;
-	role: 'regular' | 'superuser';
+	role: 'driver' | 'regular' | 'superuser';
 	organization?: string;
 }
 
@@ -23,7 +23,7 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 export async function createUser(
 	email: string,
 	password: string,
-	role: 'regular' | 'superuser' = 'regular',
+	role: 'driver' | 'regular' | 'superuser' = 'driver',
 	organization?: string
 ): Promise<User> {
 	const passwordHash = await hashPassword(password);

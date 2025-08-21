@@ -1,13 +1,57 @@
 import { db } from '$lib/server/db';
 import { tlxResults } from '$lib/server/db/schema';
 import { requireAuth } from '$lib/server/auth';
+import { eq } from 'drizzle-orm';
 import type { RequestHandler } from '@sveltejs/kit';
+
+export const GET: RequestHandler = async ({ cookies }) => {
+	try {
+		// Require authentication
+		const user = await requireAuth({ cookies } as any);
+
+		// Get TLX results for the current user
+		const results = await db
+			.select({
+				id: tlxResults.id,
+				task: tlxResults.task,
+				createdAt: tlxResults.createdAt,
+				mental: tlxResults.mental,
+				physical: tlxResults.physical,
+				temporal: tlxResults.temporal,
+				performance: tlxResults.performance,
+				effort: tlxResults.effort,
+				frustration: tlxResults.frustration
+			})
+			.from(tlxResults)
+			.where(eq(tlxResults.userId, user.id))
+			.orderBy(tlxResults.createdAt);
+
+		return new Response(JSON.stringify({ results }), {
+			status: 200,
+			headers: { 'Content-Type': 'application/json' }
+		});
+	} catch (error: any) {
+		console.error('TLX retrieval error:', error);
+
+		if (error.message === 'Authentication required') {
+			return new Response(JSON.stringify({ error: 'Authentication required' }), {
+				status: 401,
+				headers: { 'Content-Type': 'application/json' }
+			});
+		}
+
+		return new Response(JSON.stringify({ error: 'Internal server error' }), {
+			status: 500,
+			headers: { 'Content-Type': 'application/json' }
+		});
+	}
+};
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
 	try {
 		// Require authentication
-		const user = requireAuth({ cookies } as any);
-		
+		const user = await requireAuth({ cookies } as any);
+
 		const data = await request.json();
 		const { task, form, weights } = data;
 
@@ -30,7 +74,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			effort: form.effort || 0,
 			frustration: form.frustration || 0
 		};
-		
+
 		if (weights && typeof weights === 'object') {
 			insertData.mentalWeight = weights.mental || 0;
 			insertData.physicalWeight = weights.physical || 0;
@@ -45,17 +89,16 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			status: 201,
 			headers: { 'Content-Type': 'application/json' }
 		});
-		
 	} catch (error: any) {
 		console.error('TLX submission error:', error);
-		
+
 		if (error.message === 'Authentication required') {
 			return new Response(JSON.stringify({ error: 'Authentication required' }), {
 				status: 401,
 				headers: { 'Content-Type': 'application/json' }
 			});
 		}
-		
+
 		return new Response(JSON.stringify({ error: 'Internal server error' }), {
 			status: 500,
 			headers: { 'Content-Type': 'application/json' }
