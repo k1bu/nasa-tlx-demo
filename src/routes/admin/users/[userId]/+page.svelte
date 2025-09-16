@@ -55,6 +55,43 @@
 		notes: string;
 	}
 
+	interface DriverIntakeResult {
+		id: number;
+		racingExperience: string;
+		drivingTypes: string;
+		enjoymentFactors: string;
+		drivingStyle: string;
+		bestPerformance: string;
+		improvementArea: string;
+		mentalPreparation: string;
+		trackLearningProcess: string;
+		planningStyle: string;
+		focusLevel: number;
+		learningPreference: string;
+		feedbackProcessing: string;
+		postSessionPreference: string;
+		technicalExplanation: number;
+		mentalSideInterest: string;
+		version: string;
+		completed: boolean;
+		createdAt: string;
+	}
+
+	interface PressureResult {
+		id: number;
+		pressureFeelings: string;
+		pressureEffect: string;
+		pressurePerformanceRating: number;
+		stressfulSituations: string;
+		mistakeRecoveryTime: string;
+		resetStrategies: string;
+		raceDayPreparation: string;
+		postSessionDrain: number;
+		version: string;
+		completed: boolean;
+		createdAt: string;
+	}
+
 	interface User {
 		id: number;
 		email: string;
@@ -66,6 +103,8 @@
 	let user: User | null = null;
 	let tlxResults: TLXResult[] = [];
 	let taisResults: TAISResult[] = [];
+	let driverIntakeResults: DriverIntakeResult[] = [];
+	let pressureResults: PressureResult[] = [];
 	let loading = true;
 	let error = '';
 	let activeTab = 'tlx';
@@ -100,6 +139,20 @@
 			if (taisResponse.ok) {
 				const taisData = await taisResponse.json();
 				taisResults = taisData.results;
+			}
+
+			// Load Driver Intake results
+			const driverIntakeResponse = await fetch(`/api/admin/users/${userId}/driver-intake`);
+			if (driverIntakeResponse.ok) {
+				const driverIntakeData = await driverIntakeResponse.json();
+				driverIntakeResults = driverIntakeData.results;
+			}
+
+			// Load Pressure Assessment results
+			const pressureResponse = await fetch(`/api/admin/users/${userId}/pressure`);
+			if (pressureResponse.ok) {
+				const pressureData = await pressureResponse.json();
+				pressureResults = pressureData.results;
 			}
 		} catch (err) {
 			error = 'Failed to load user data';
@@ -245,6 +298,22 @@
 						>
 							TAIS Results ({taisResults.length})
 						</button>
+						<button
+							on:click={() => (activeTab = 'driver-intake')}
+							class="border-b-2 px-1 py-2 text-sm font-medium {activeTab === 'driver-intake'
+								? 'border-blue-500 text-blue-600'
+								: 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'}"
+						>
+							Driver Intake ({driverIntakeResults.length})
+						</button>
+						<button
+							on:click={() => (activeTab = 'pressure')}
+							class="border-b-2 px-1 py-2 text-sm font-medium {activeTab === 'pressure'
+								? 'border-blue-500 text-blue-600'
+								: 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'}"
+						>
+							Pressure Assessment ({pressureResults.length})
+						</button>
 					</nav>
 				</div>
 
@@ -366,6 +435,263 @@
 													</div>
 												</div>
 											{/each}
+										</div>
+									</div>
+								{/each}
+							{/if}
+						</div>
+					{:else if activeTab === 'driver-intake'}
+						<!-- Driver Intake Results -->
+						<div class="overflow-hidden bg-white shadow sm:rounded-lg">
+							{#if driverIntakeResults.length === 0}
+								<div class="px-4 py-12 text-center sm:px-6">
+									<div class="text-gray-500">No Driver Intake results found</div>
+								</div>
+							{:else}
+								{#each driverIntakeResults as result}
+									<div class="border-b border-gray-200 px-4 py-6 sm:px-6">
+										<div class="mb-4">
+											<h4 class="text-lg font-medium text-gray-900">
+												Driver Intake Questionnaire - {formatDate(result.createdAt)}
+											</h4>
+											<div class="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+												<span>Version: {result.version}</span>
+												<span class="flex items-center">
+													<span class="mr-1">Completed:</span>
+													<span
+														class="font-medium {result.completed
+															? 'text-green-600'
+															: 'text-red-600'}"
+													>
+														{result.completed ? 'Yes' : 'No'}
+													</span>
+												</span>
+											</div>
+										</div>
+
+										<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+											<!-- Section 1: Driving Background & Style -->
+											<div class="space-y-4">
+												<h5 class="text-md font-semibold text-gray-800">
+													Driving Background & Style
+												</h5>
+												<div class="space-y-3">
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Racing Experience</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.racingExperience || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Driving Types</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.drivingTypes || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Enjoyment Factors</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.enjoymentFactors || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">
+															Driving Style (3 words)
+														</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.drivingStyle || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Best Performance</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.bestPerformance || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Improvement Area</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.improvementArea || 'Not provided'}
+														</dd>
+													</div>
+												</div>
+											</div>
+
+											<!-- Section 2: Thinking, Focus & Learning Style -->
+											<div class="space-y-4">
+												<h5 class="text-md font-semibold text-gray-800">
+													Thinking, Focus & Learning Style
+												</h5>
+												<div class="space-y-3">
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Mental Preparation</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.mentalPreparation || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">
+															Track Learning Process
+														</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.trackLearningProcess || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Planning Style</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.planningStyle || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Focus Level (1-5)</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.focusLevel || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Learning Preference</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.learningPreference || 'Not provided'}
+														</dd>
+													</div>
+												</div>
+											</div>
+
+											<!-- Section 3: Feedback & Reflection -->
+											<div class="space-y-4">
+												<h5 class="text-md font-semibold text-gray-800">Feedback & Reflection</h5>
+												<div class="space-y-3">
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Feedback Processing</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.feedbackProcessing || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">
+															Post-Session Preference
+														</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.postSessionPreference || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">
+															Technical Explanation (1-5)
+														</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.technicalExplanation || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Mental Side Interest</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.mentalSideInterest || 'Not provided'}
+														</dd>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								{/each}
+							{/if}
+						</div>
+					{:else if activeTab === 'pressure'}
+						<!-- Pressure Assessment Results -->
+						<div class="overflow-hidden bg-white shadow sm:rounded-lg">
+							{#if pressureResults.length === 0}
+								<div class="px-4 py-12 text-center sm:px-6">
+									<div class="text-gray-500">No Pressure Assessment results found</div>
+								</div>
+							{:else}
+								{#each pressureResults as result}
+									<div class="border-b border-gray-200 px-4 py-6 sm:px-6">
+										<div class="mb-4">
+											<h4 class="text-lg font-medium text-gray-900">
+												Pressure Assessment - {formatDate(result.createdAt)}
+											</h4>
+											<div class="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+												<span>Version: {result.version}</span>
+												<span class="flex items-center">
+													<span class="mr-1">Completed:</span>
+													<span
+														class="font-medium {result.completed
+															? 'text-green-600'
+															: 'text-red-600'}"
+													>
+														{result.completed ? 'Yes' : 'No'}
+													</span>
+												</span>
+											</div>
+										</div>
+
+										<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+											<!-- Section 1: Pressure Perception -->
+											<div class="space-y-4">
+												<h5 class="text-md font-semibold text-gray-800">Pressure Perception</h5>
+												<div class="space-y-3">
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Pressure Feelings</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.pressureFeelings || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Pressure Effect</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.pressureEffect || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">
+															Performance Under Pressure (1-5)
+														</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.pressurePerformanceRating || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Stressful Situations</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.stressfulSituations || 'Not provided'}
+														</dd>
+													</div>
+												</div>
+											</div>
+
+											<!-- Section 2: Recovery & Coping -->
+											<div class="space-y-4">
+												<h5 class="text-md font-semibold text-gray-800">Recovery & Coping</h5>
+												<div class="space-y-3">
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Mistake Recovery Time</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.mistakeRecoveryTime || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Reset Strategies</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.resetStrategies || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">Race Day Preparation</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.raceDayPreparation || 'Not provided'}
+														</dd>
+													</div>
+													<div>
+														<dt class="text-sm font-medium text-gray-500">
+															Post-Session Drain (1-5)
+														</dt>
+														<dd class="mt-1 text-sm text-gray-900">
+															{result.postSessionDrain || 'Not provided'}
+														</dd>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 								{/each}
