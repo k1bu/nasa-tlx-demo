@@ -203,8 +203,8 @@
 
 	function isHighScore(key: string, value: number): boolean {
 		if (key === 'performance') {
-			// Performance is inverted: low = failure (bad)
-			return value <= 20;
+			// Performance is inverted: high = bad performance
+			return value > 80;
 		}
 		// For all other dimensions, high = bad
 		return value >= 80;
@@ -476,7 +476,11 @@
 															{result.goal || '—'}
 														</div>
 													</td>
-													<td class="px-6 py-4 text-sm whitespace-nowrap">
+													<td
+														class="px-6 py-4 text-sm whitespace-nowrap {calculateTLXScore(result) > 80
+															? 'bg-red-100 font-semibold'
+															: ''}"
+													>
 														<span class="{getScoreColor(calculateTLXScore(result))}">
 															{calculateTLXScore(result).toFixed(1)}
 														</span>
