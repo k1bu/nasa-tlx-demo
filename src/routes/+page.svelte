@@ -59,12 +59,30 @@
 	};
 
 	let task = '';
+	let goal = '';
+	let track = '';
+	let seriesCompetition = '';
+	let trackConditions = '';
 	let user: { role?: string } | null = null;
 	let showPairwise = false;
 	let pairwiseWeights: any = null;
 	let submittedResult: any = null;
 	let submitting = false;
 	let loading = true;
+
+	// Helper function to round slider value to nearest 5
+	function roundToStep5(value: number): number {
+		return Math.round(value / 5) * 5;
+	}
+
+	// Track conditions options
+	const trackConditionsOptions = [
+		'',
+		'Dry',
+		'Wet',
+		'Start Wet -> End Dry',
+		'Start Dry -> End Wet'
+	];
 
 	onMount(async () => {
 		await checkAuth();
@@ -146,16 +164,60 @@
 
 				{#if !showPairwise}
 					<form on:submit|preventDefault={handleSubmit}>
-						<div class="mb-6">
-							<label class="mb-1 block text-lg font-semibold" for="task">Task</label>
-							<input
-								id="task"
-								type="text"
-								class="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none"
-								placeholder="Describe the task you are evaluating..."
-								bind:value={task}
-								required
-							/>
+						<div class="mb-6 space-y-4">
+							<div>
+								<label class="mb-1 block text-lg font-semibold" for="task">Task</label>
+								<input
+									id="task"
+									type="text"
+									class="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none"
+									placeholder="Describe the task you are evaluating..."
+									bind:value={task}
+									required
+								/>
+							</div>
+							<div>
+								<label class="mb-1 block text-lg font-semibold" for="goal">Goal</label>
+								<input
+									id="goal"
+									type="text"
+									class="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none"
+									placeholder="What is your current goal?"
+									bind:value={goal}
+								/>
+							</div>
+							<div>
+								<label class="mb-1 block text-lg font-semibold" for="track">Track</label>
+								<input
+									id="track"
+									type="text"
+									class="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none"
+									placeholder="What track is this on?"
+									bind:value={track}
+								/>
+							</div>
+							<div>
+								<label class="mb-1 block text-lg font-semibold" for="seriesCompetition">Series/Competition</label>
+								<input
+									id="seriesCompetition"
+									type="text"
+									class="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none"
+									placeholder="What competition is this related to?"
+									bind:value={seriesCompetition}
+								/>
+							</div>
+							<div>
+								<label class="mb-1 block text-lg font-semibold" for="trackConditions">Track Conditions</label>
+								<select
+									id="trackConditions"
+									class="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none"
+									bind:value={trackConditions}
+								>
+									{#each trackConditionsOptions as option}
+										<option value={option}>{option || '-- Select --'}</option>
+									{/each}
+								</select>
+							</div>
 						</div>
 						<div class="space-y-8">
 							{#each dimensions as dim}
@@ -169,7 +231,11 @@
 											type="range"
 											min="0"
 											max="100"
+											step="5"
 											bind:value={form[dim.key]}
+											on:input={(e) => {
+												form[dim.key] = roundToStep5(Number(e.currentTarget.value));
+											}}
 											class="flex-1 accent-red-600"
 										/>
 										<span class="text-xs text-gray-400">{dim.highLabel}</span>
@@ -198,6 +264,10 @@
 								headers: { 'Content-Type': 'application/json' },
 								body: JSON.stringify({
 									task,
+									goal,
+									track,
+									seriesCompetition,
+									trackConditions,
 									form,
 									weights: pairwiseWeights
 								})

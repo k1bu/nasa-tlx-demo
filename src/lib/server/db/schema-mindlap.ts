@@ -137,6 +137,10 @@ export const tlxResults = pgTable('tlx_results', {
 	effort: integer('effort').notNull(),
 	frustration: integer('frustration').notNull(),
 	task: text('task'),
+	goal: text('goal'),
+	track: text('track'),
+	seriesCompetition: text('series_competition'),
+	trackConditions: varchar('track_conditions', { length: 50 }),
 	// Weights
 	mentalWeight: integer('mental_weight'),
 	physicalWeight: integer('physical_weight'),

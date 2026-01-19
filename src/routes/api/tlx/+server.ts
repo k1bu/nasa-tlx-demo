@@ -14,6 +14,10 @@ export const GET: RequestHandler = async ({ cookies }) => {
 			.select({
 				id: tlxResults.id,
 				task: tlxResults.task,
+				goal: tlxResults.goal,
+				track: tlxResults.track,
+				seriesCompetition: tlxResults.seriesCompetition,
+				trackConditions: tlxResults.trackConditions,
 				createdAt: tlxResults.createdAt,
 				mental: tlxResults.mental,
 				physical: tlxResults.physical,
@@ -53,7 +57,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		const user = await requireAuth({ cookies } as any);
 
 		const data = await request.json();
-		const { task, form, weights } = data;
+		const { task, goal, track, seriesCompetition, trackConditions, form, weights } = data;
 
 		// Validate required data
 		if (!form || typeof form !== 'object') {
@@ -67,6 +71,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		const insertData: any = {
 			userId: user.id, // Link to authenticated user
 			task,
+			goal: goal || null,
+			track: track || null,
+			seriesCompetition: seriesCompetition || null,
+			trackConditions: trackConditions || null,
 			mental: form.mental || 0,
 			physical: form.physical || 0,
 			temporal: form.temporal || 0,
