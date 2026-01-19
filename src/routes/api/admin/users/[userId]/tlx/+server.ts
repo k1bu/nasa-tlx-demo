@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
 import { tlxResults } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ params }) => {
@@ -18,6 +18,10 @@ export const GET: RequestHandler = async ({ params }) => {
 			.select({
 				id: tlxResults.id,
 				task: tlxResults.task,
+				goal: tlxResults.goal,
+				track: tlxResults.track,
+				seriesCompetition: tlxResults.seriesCompetition,
+				trackConditions: tlxResults.trackConditions,
 				mental: tlxResults.mental,
 				physical: tlxResults.physical,
 				temporal: tlxResults.temporal,
@@ -34,7 +38,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			})
 			.from(tlxResults)
 			.where(eq(tlxResults.userId, userId))
-			.orderBy(tlxResults.createdAt);
+			.orderBy(desc(tlxResults.createdAt));
 
 		return new Response(JSON.stringify({ results }), {
 			status: 200,
