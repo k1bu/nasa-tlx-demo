@@ -201,6 +201,21 @@
 		return 'text-green-600';
 	}
 
+	function isHighWorkload(result: TLXResult): boolean {
+		const tlxScore = calculateTLXScore(result);
+		// Consider high workload if TLX score >= 80
+		// Also consider individual high scores (except Performance, which is inverted)
+		const highScores = [
+			result.mental >= 80,
+			result.physical >= 80,
+			result.temporal >= 80,
+			result.performance <= 20, // Performance is inverted: low = failure (bad), high = perfect (good)
+			result.effort >= 80,
+			result.frustration >= 80
+		];
+		return tlxScore >= 80 || highScores.some((high) => high);
+	}
+
 	function calculateTLXScore(result: TLXResult) {
 		const scores = [
 			result.mental * result.mentalWeight,
@@ -384,21 +399,6 @@
 												<th
 													class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase bg-gray-50"
 												>
-													Track
-												</th>
-												<th
-													class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase bg-gray-50"
-												>
-													Series/Competition
-												</th>
-												<th
-													class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase bg-gray-50"
-												>
-													Track Conditions
-												</th>
-												<th
-													class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase bg-gray-50"
-												>
 													TLX Score
 												</th>
 												<th
@@ -449,11 +449,30 @@
 														<span>Frustration</span>
 													</span>
 												</th>
+												<th
+													class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase bg-gray-50"
+												>
+													Track
+												</th>
+												<th
+													class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase bg-gray-50"
+												>
+													Series/Competition
+												</th>
+												<th
+													class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase bg-gray-50"
+												>
+													Track Conditions
+												</th>
 											</tr>
 										</thead>
 										<tbody class="divide-y divide-gray-200 bg-white">
 											{#each tlxResults as result}
-												<tr class="hover:bg-gray-50 transition-colors">
+												<tr
+													class="transition-colors {isHighWorkload(result)
+														? 'bg-red-50 hover:bg-red-100 border-l-4 border-red-500'
+														: 'hover:bg-gray-50'}"
+												>
 													<td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
 														{formatDate(result.createdAt)}
 													</td>
@@ -466,6 +485,50 @@
 														<div class="truncate" title={result.goal || '—'}>
 															{result.goal || '—'}
 														</div>
+													</td>
+													<td class="px-6 py-4 text-sm whitespace-nowrap">
+														<span class="{getScoreColor(calculateTLXScore(result))}">
+															{calculateTLXScore(result).toFixed(1)}
+														</span>
+													</td>
+													<td class="px-6 py-4 text-sm whitespace-nowrap">
+														<span class="flex items-center gap-1 {getTLXColor('mental')}">
+															<span>{getTLXIcon('mental')}</span>
+															<span class="{result.mental >= 80 ? 'font-semibold' : ''}">{result.mental}</span>
+														</span>
+													</td>
+													<td class="px-6 py-4 text-sm whitespace-nowrap">
+														<span class="flex items-center gap-1 {getTLXColor('physical')}">
+															<span>{getTLXIcon('physical')}</span>
+															<span class="{result.physical >= 80 ? 'font-semibold' : ''}">{result.physical}</span>
+														</span>
+													</td>
+													<td class="px-6 py-4 text-sm whitespace-nowrap">
+														<span class="flex items-center gap-1 {getTLXColor('temporal')}">
+															<span>{getTLXIcon('temporal')}</span>
+															<span class="{result.temporal >= 80 ? 'font-semibold' : ''}">{result.temporal}</span>
+														</span>
+													</td>
+													<td class="px-6 py-4 text-sm whitespace-nowrap">
+														<span class="flex items-center gap-1 {getTLXColor('performance')}">
+															<span>{getTLXIcon('performance')}</span>
+															<span class="{result.performance <= 20 ? 'font-semibold' : ''}">{result.performance}</span>
+															<span class="text-xs text-gray-400 ml-1">
+																({result.performance <= 20 ? 'Failure' : result.performance >= 80 ? 'Perfect' : ''})
+															</span>
+														</span>
+													</td>
+													<td class="px-6 py-4 text-sm whitespace-nowrap">
+														<span class="flex items-center gap-1 {getTLXColor('effort')}">
+															<span>{getTLXIcon('effort')}</span>
+															<span class="{result.effort >= 80 ? 'font-semibold' : ''}">{result.effort}</span>
+														</span>
+													</td>
+													<td class="px-6 py-4 text-sm whitespace-nowrap">
+														<span class="flex items-center gap-1 {getTLXColor('frustration')}">
+															<span>{getTLXIcon('frustration')}</span>
+															<span class="{result.frustration >= 80 ? 'font-semibold' : ''}">{result.frustration}</span>
+														</span>
 													</td>
 													<td class="px-6 py-4 text-sm text-gray-600 max-w-xs">
 														<div class="truncate" title={result.track || '—'}>
@@ -485,47 +548,6 @@
 														{:else}
 															<span class="text-gray-400">—</span>
 														{/if}
-													</td>
-													<td class="px-6 py-4 text-sm whitespace-nowrap">
-														<span class="{getScoreColor(calculateTLXScore(result))}">
-															{calculateTLXScore(result).toFixed(1)}
-														</span>
-													</td>
-													<td class="px-6 py-4 text-sm whitespace-nowrap">
-														<span class="flex items-center gap-1 {getTLXColor('mental')}">
-															<span>{getTLXIcon('mental')}</span>
-															<span>{result.mental}</span>
-														</span>
-													</td>
-													<td class="px-6 py-4 text-sm whitespace-nowrap">
-														<span class="flex items-center gap-1 {getTLXColor('physical')}">
-															<span>{getTLXIcon('physical')}</span>
-															<span>{result.physical}</span>
-														</span>
-													</td>
-													<td class="px-6 py-4 text-sm whitespace-nowrap">
-														<span class="flex items-center gap-1 {getTLXColor('temporal')}">
-															<span>{getTLXIcon('temporal')}</span>
-															<span>{result.temporal}</span>
-														</span>
-													</td>
-													<td class="px-6 py-4 text-sm whitespace-nowrap">
-														<span class="flex items-center gap-1 {getTLXColor('performance')}">
-															<span>{getTLXIcon('performance')}</span>
-															<span>{result.performance}</span>
-														</span>
-													</td>
-													<td class="px-6 py-4 text-sm whitespace-nowrap">
-														<span class="flex items-center gap-1 {getTLXColor('effort')}">
-															<span>{getTLXIcon('effort')}</span>
-															<span>{result.effort}</span>
-														</span>
-													</td>
-													<td class="px-6 py-4 text-sm whitespace-nowrap">
-														<span class="flex items-center gap-1 {getTLXColor('frustration')}">
-															<span>{getTLXIcon('frustration')}</span>
-															<span>{result.frustration}</span>
-														</span>
 													</td>
 												</tr>
 											{/each}
